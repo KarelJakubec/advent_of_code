@@ -1,0 +1,25 @@
+{
+  "name": "advent_of_code_2019",
+  "version": "1.0.0",
+  "description": "Application solving advent of code 2019 ",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KarelJakubec/advent_of_code.git"
+  },
+  "keywords": [
+    "advent_of_code"
+  ],
+  "author": "Karel Jakubec",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KarelJakubec/advent_of_code/issues"
+  },
+  "homepage": "https://github.com/KarelJakubec/advent_of_code#readme",
+  "dependencies": {
+    "yargs": "^15.0.2"
+  }
+}
