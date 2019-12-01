@@ -1,0 +1,4 @@
+decorator==4.3.0
+llist==0.6
+networkx==2.2
+pkg-resources==0.0.0
