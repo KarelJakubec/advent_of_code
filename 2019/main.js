@@ -1,8 +1,6 @@
 
 const yargs = require('yargs');
 
-console.log("START")
-
 const argv = yargs
     .option('solution', {
         alias: 's',
@@ -27,10 +25,10 @@ const argv = yargs
 
 const handler = require("./" + argv.day + "/solution.js")
 
-if(argv.solution == "easy") {
+if(argv.solution === "easy" || argv.solution === "e") {
     console.log(handler.easy(argv.test));
 }
-else if (argv.solution == "hard") {
+else if (argv.solution === "hard" || argv.solution === "h") {
     console.log(handler.hard(argv.test));
 }
 
