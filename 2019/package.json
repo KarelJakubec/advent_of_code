@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/KarelJakubec/advent_of_code#readme",
   "dependencies": {
+    "performant-array-to-tree": "^1.2.0",
     "yargs": "^15.0.2"
   }
 }
