@@ -4,12 +4,12 @@ const machine = require("../machine")
 
 const easy = (test) => {
     let data = common.readToArray('./5/data')[0].split(',').map(x => parseInt(x));
-    machine.runMachine(data, () => 1);
+    new machine.Machine(data, () => 1, console.log).run();
 }
 
 const hard = (test) => {
     let data = common.readToArray('./5/data')[0].split(',').map(x => parseInt(x));
-    machine.runMachine(data, () => 5);
+    new machine.Machine(data, () => 5, console.log).run();
 }
 
 exports.easy = easy;

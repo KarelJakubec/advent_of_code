@@ -1,88 +1,104 @@
-const decodeInstruction = (num) => {
-    let ins = {
-        opcode: 0,
-        paramModes: [0,0,0]
+class Machine {
+
+    static decodeInstruction(num) {
+        let ins = {
+            opcode: 0,
+            paramModes: [0,0,0]
+        }
+        ins.opcode = num % 100;
+        num = Math.floor(num / 100);
+        let i = 0;
+        while(num > 0) {
+            ins.paramModes[i] = num % 10;
+            num = Math.floor(num / 10);
+            ++i;
+        }
+
+        return ins;
     }
-    ins.opcode = num % 100;
-    num = Math.floor(num / 100);
-    let i = 0;
-    while(num > 0) {
-        ins.paramModes[i] = num % 10;
-        num = Math.floor(num / 10);
-        ++i;
+
+    constructor(data, input, output) {
+        this.pos = 0;
+        this.data = data;
+        this.input = input;
+        this.output = output;
     }
 
-    return ins;
-}
-
-const getArgs = (ins, data, pos, n) => {
-    let arr = Array(n);
-    for(let i = 0; i < n; ++i) {
-        arr[i] = ins.paramModes[i] === 1 ? data[pos + 1 + i] : data[data[pos + 1 + i]];
+    getArgs(ins, n) {
+        let arr = Array(n);
+        for(let i = 0; i < n; ++i) {
+            arr[i] = ins.paramModes[i] === 1 ? this.data[this.pos + 1 + i] : this.data[this.data[this.pos + 1 + i]];
+        }
+        return arr;
     }
-    return arr;
-}
 
-const runMachine = (data, input) => {
-    let pos = 0;
+    run() {
+        let ins = Machine.decodeInstruction(this.data[this.pos]);
 
-    let ins = decodeInstruction(data[pos]);
+        while(ins.opcode != 99) {
 
-    while(ins.opcode != 99) {
+            if(ins.opcode == 1) {
+                let args = this.getArgs(ins, 2);
+                this.data[this.data[this.pos + 3]] = args[0] + args[1];
+                this.pos += 4;
+            }
+            else if(ins.opcode == 2) {
+                let args = this.getArgs(ins, 2);
+                this.data[this.data[this.pos + 3]] = args[0] * args[1];
+                this.pos += 4;
+            }
+            else if(ins.opcode == 3) {
+                let inp = this.input();
+                if(inp === null) {
+                    return -1;
+                }
 
-        if(ins.opcode == 1) {
-            args = getArgs(ins, data, pos, 2);
-            data[data[pos + 3]] = args[0] + args[1];
-            pos += 4;
-        }
-        else if(ins.opcode == 2) {
-            args = getArgs(ins, data, pos, 2);
-            data[data[pos + 3]] = args[0] * args[1];
-            pos += 4;
-        }
-        else if(ins.opcode == 3) {
-            data[data[pos + 1]] = input();
-            pos += 2;
-        }
-        else if(ins.opcode == 4) {
-            console.log(data[data[pos + 1]]);
-            pos += 2;
-        }
-        else if(ins.opcode == 5) {
-            args = getArgs(ins, data, pos, 2);
-            if(args[0] != 0) {
-                pos = args[1];
+                this.data[this.data[this.pos + 1]] = inp;
+                this.pos += 2;
+            }
+            else if(ins.opcode == 4) {
+                this.output(this.data[this.data[this.pos + 1]]);
+                this.pos += 2;
+            }
+            else if(ins.opcode == 5) {
+                let args = this.getArgs(ins, 2);
+                if(args[0] != 0) {
+                    this.pos = args[1];
+                }
+                else {
+                    this.pos += 3;
+                }
+            }
+            else if(ins.opcode == 6) {
+                let args = this.getArgs(ins, 2);
+                if(args[0] == 0) {
+                    this.pos = args[1];
+                }
+                else {
+                    this.pos += 3;
+                }
+            }
+            else if(ins.opcode == 7) {
+                let args = this.getArgs(ins, 2);
+                this.data[this.data[this.pos + 3]] = args[0] < args[1] ? 1 : 0;
+                this.pos += 4;
+            }
+            else if(ins.opcode == 8) {
+                let args = this.getArgs(ins, 2);
+                this.data[this.data[this.pos + 3]] = args[0] == args[1] ? 1 : 0;
+                this.pos += 4;
             }
             else {
-                pos += 3;
+                console.log("ERROR " + ins + " " + this.data[this.pos]);
+                break;
             }
-        }
-        else if(ins.opcode == 6) {
-            args = getArgs(ins, data, pos, 2);
-            if(args[0] == 0) {
-                pos = args[1];
-            }
-            else {
-                pos += 3;
-            }
-        }
-        else if(ins.opcode == 7) {
-            args = getArgs(ins, data, pos, 2);
-            data[data[pos + 3]] = args[0] < args[1] ? 1 : 0;
-            pos += 4;
-        }
-        else if(ins.opcode == 8) {
-            args = getArgs(ins, data, pos, 2);
-            data[data[pos + 3]] = args[0] == args[1] ? 1 : 0;
-            pos += 4;
-        }
-        else {
-            console.log("ERROR " + ins + " " + data[pos]);
-            break;
+
+            ins = Machine.decodeInstruction(this.data[this.pos]);
         }
 
-        ins = decodeInstruction(data[pos]);
+        return 0;
     }
 }
 
-exports.runMachine = runMachine
+
+exports.Machine = Machine

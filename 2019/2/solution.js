@@ -11,7 +11,7 @@ const patchArray = (arr, val1, val2) => {
 const easy = (test) => {
     let data = common.readToArray('./2/data')[0].split(',').map(x => parseInt(x));
     patchArray(data, 12, 2);
-    machine.runMachine(data, () => 0);
+    new machine.Machine(data, () => 0).run();
     return data[0]
 }
 
@@ -22,7 +22,7 @@ const hard = (test) => {
         for(let j = 0; j < 100; ++j) {
             let data = common.readToArray('./2/data')[0].split(',').map(x => parseInt(x));
             patchArray(data, i, j);
-            machine.runMachine(data, () => 0)
+            new machine.Machine(data, () => 0).run();
             if(data[0] === TARGET) {
                 return 100 * i + j;
             }
